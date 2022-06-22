@@ -14,6 +14,13 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCfif_oFBoC8AyYUbqfkwmt1gQKLufsr0k",
   authDomain: "fir-9-dojo-3dffc.firebaseapp.com",
@@ -28,6 +35,7 @@ initializeApp(firebaseConfig);
 
 //init services
 const db = getFirestore();
+const auth = getAuth();
 
 //collection ref
 const colRef = collection(db, "books");
@@ -90,4 +98,50 @@ updateBookForm.addEventListener("submit", (e) => {
   }).then(() => {
     updateBookForm.reset();
   });
+});
+
+//sign up users
+const signupForm = document.querySelector(".signup");
+signupForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const email = signupForm.email.value;
+  const password = signupForm.password.value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user created:", cred.user);
+      signupForm.reset();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+
+//sign in and out
+const logoutButton = document.querySelector(".logout");
+logoutButton.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      console.log("the user signed out");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+
+const loginForm = document.querySelector(".login");
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const email = loginForm.email.value;
+  const password = loginForm.password.value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user logged in:", cred.user);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
