@@ -10,6 +10,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  getDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -31,11 +32,7 @@ const db = getFirestore();
 const colRef = collection(db, "books");
 
 //queries
-const q = query(
-  colRef,
-
-  orderBy("createdAt")
-);
+const q = query(colRef, orderBy("createdAt"));
 
 //get real time collection data
 
@@ -71,4 +68,11 @@ deleteBookForm.addEventListener("submit", (e) => {
   deleteDoc(docRef).then(() => {
     deleteBookForm.reset();
   });
+});
+
+//get a single document
+const docRef = doc(db, "books", "SEpmsGvgQF0CxlY5ZcJq");
+
+onSnapshot(docRef, (doc) => {
+  console.log(doc.data(), doc.id);
 });
